@@ -9,20 +9,35 @@ function disableUser($userID, $config)
 {
     $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
     $registeredID = $config['config']['registeredGroupID'];
-    mysqli_query($mysqli, "DELETE FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
-    logInfo("User removed from groups. userID - ({$userID})");
+    $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
+    $rowCount = mysqli_num_rows($group);
+    if ((int)$rowCount === 0) {
+        mysqli_query($mysqli, "DELETE FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
+        logInfo("User removed from groups. userID - ({$userID})");
+    }
 }
 
-function enableUser($userID, $config)
+function enableCorp($userID, $config)
 {
     $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
     $corpGroup = $config['config']['corpID'];
-    $allianceGroup = $config['config']['allianceID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $corpGroup");
     $rowCount = mysqli_num_rows($group);
     if ((int)$rowCount === 0) {
-        mysqli_query($mysqli, "INSERT INTO table_name (group_id,user_id,group_leader,user_pending) VALUES (9,$userID,0,0);");
-        logInfo("User added to MAMBA. userID - ({$userID})");
+        mysqli_query($mysqli, "INSERT INTO table_name (group_id,user_id,group_leader,user_pending) VALUES ($corpGroup,$userID,0,0);");
+        logInfo("User added to corp group. userID - ({$userID})");
+    }
+}
+
+function enableAlliance($userID, $config)
+{
+    $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
+    $allianceGroup = $config['config']['allianceID'];
+    $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $allianceGroup");
+    $rowCount = mysqli_num_rows($group);
+    if ((int)$rowCount === 0) {
+        mysqli_query($mysqli, "INSERT INTO table_name (group_id,user_id,group_leader,user_pending) VALUES ($allianceGroup,$userID,0,0);");
+        logInfo("User added to alliance group. userID - ({$userID})");
     }
 }
 
@@ -33,23 +48,30 @@ function checkStatus($keyID, $vCode, $config)
     $xml = makeApiRequest($url);
     if ($xml === null) {
         logInfo('API Returned null, skipping.');
-        return '1';
+        return '3';
+    }
+    if ($xml->result->rowset->row === null) {
+        logInfo('API Returned null, skipping.');
+        return '3';
     }
     foreach ($xml->result->rowset->row as $character) {
         if ($character->attributes()->errorCode !== null) {
             $error = $character->attributes()->errorCode;
-            logInfo("API Error #{$error} Detected.");
             if ((int)$error === 222 || 223 || 202 || 203 || 204) {
                 logInfo("API Key Disabled. KeyID - ({$keyID})");
                 return null;
             }
+            logInfo("API Error #{$error} Detected.");
         }
         $corpID = $character->attributes()->corporationID;
         if ((int)$corpID === $config['config']['corpID']) {
             return '1';
         }
+        $allianceID = $character->attributes()->allianceID;
+        if ((int)$allianceID === $config['config']['allianceID']) {
+            return '2';
+        }
     }
-    logInfo("API Key Disabled. KeyID - ({$keyID})");
     return null;
 }
 
@@ -80,6 +102,6 @@ function makeApiRequest($url)
 function logInfo($msg)
 {
     $log = fopen(__DIR__ . '/../authLog.log',"a");
-    $date = date('m-d-Y');
+    $date = date('m-d-Y H:i:s');
     fwrite($log,PHP_EOL . "$date - $msg");
 }

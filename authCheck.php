@@ -14,5 +14,10 @@ while($row = $result->fetch_assoc()) {
         disableUser($userID, $config);
         continue;
     }
-    enableUser($userID, $config);
+    if ($keyInfo === '1') {
+        enableCorp($userID, $config);
+    }
+    if ($keyInfo === '2') {
+        enableAlliance($userID, $config);
+    }
 }
