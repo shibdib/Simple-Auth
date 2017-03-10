@@ -76,9 +76,9 @@ function makeApiRequest($url)
 {
     try {
         // Initialize a new request for this URL
-        $ch = curl_init($url);
+        $curl = curl_init($url);
         // Set the options for this request
-        curl_setopt_array($ch, array(
+        curl_setopt_array($curl, array(
             CURLOPT_FOLLOWLOCATION => true, // Yes, we want to follow a redirect
             CURLOPT_RETURNTRANSFER => true, // Yes, we want that curl_exec returns the fetched data
             CURLOPT_SSL_VERIFYPEER => true, // Do not verify the SSL certificate
@@ -86,9 +86,9 @@ function makeApiRequest($url)
             CURLOPT_TIMEOUT => 15,
         ));
         // Fetch the data from the URL
-        $data = curl_exec($ch);
+        $data = curl_exec($curl);
         // Close the connection
-        curl_close($ch);
+        curl_close($curl);
         // Return a new SimpleXMLElement based upon the received data
         return new SimpleXMLElement($data);
     } catch (Exception $e) {
