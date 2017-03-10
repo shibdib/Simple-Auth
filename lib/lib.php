@@ -1,13 +1,11 @@
 <?php
-function getInfo($config)
+function getInfo($mysqli)
 {
-    $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
     return mysqli_query($mysqli, 'SELECT * FROM phpbb_profile_fields_data');
 }
 
-function disableUser($userID, $config)
+function disableUser($userID, $config, $mysqli)
 {
-    $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
     $registeredID = $config['config']['registeredGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
     $rowCount = mysqli_num_rows($group);
@@ -18,9 +16,8 @@ function disableUser($userID, $config)
     }
 }
 
-function enableCorp($userID, $config)
+function enableCorp($userID, $config, $mysqli)
 {
-    $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
     $corpGroup = $config['config']['corpGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $corpGroup");
     $rowCount = mysqli_num_rows($group);
@@ -31,9 +28,8 @@ function enableCorp($userID, $config)
     }
 }
 
-function enableAlliance($userID, $config)
+function enableAlliance($userID, $config, $mysqli)
 {
-    $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
     $allianceGroup = $config['config']['allianceGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $allianceGroup");
     $rowCount = mysqli_num_rows($group);
@@ -108,7 +104,7 @@ function updateStatus($userID, $status, $config)
 
 function logInfo($msg)
 {
-    $log = fopen(__DIR__ . '/../authLog.log',"a");
+    $log = fopen(__DIR__ . '/../authLog.log', 'ab');
     $date = date('m-d-Y H:i:s');
-    fwrite($log,PHP_EOL . "$date - $msg");
+    fwrite($log, PHP_EOL . "$date - $msg");
 }
