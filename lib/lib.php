@@ -11,10 +11,10 @@ function disableUser($userID, $config)
     $registeredID = $config['config']['registeredGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
     $rowCount = mysqli_num_rows($group);
+    updateStatus($userID, 'Deactivated', $config);
     if ((int)$rowCount > 0) {
         mysqli_query($mysqli, "DELETE FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
         logInfo("User removed from groups. userID - ({$userID})");
-        updateStatus($userID, 'Deactivated', $config);
     }
 }
 
@@ -24,10 +24,10 @@ function enableCorp($userID, $config)
     $corpGroup = $config['config']['corpGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $corpGroup");
     $rowCount = mysqli_num_rows($group);
+    updateStatus($userID, 'Active - Corp', $config);
     if ((int)$rowCount === 0) {
         mysqli_query($mysqli, "INSERT INTO phpbb_user_group (group_id,user_id,group_leader,user_pending) VALUES ($corpGroup,$userID,0,0)");
         logInfo("User added to corp group. userID - ({$userID})");
-        updateStatus($userID, 'Active - Corp', $config);
     }
 }
 
@@ -37,10 +37,10 @@ function enableAlliance($userID, $config)
     $allianceGroup = $config['config']['allianceGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $allianceGroup");
     $rowCount = mysqli_num_rows($group);
+    updateStatus($userID, 'Active - Alliance', $config);
     if ((int)$rowCount === 0) {
         mysqli_query($mysqli, "INSERT INTO phpbb_user_group (group_id,user_id,group_leader,user_pending) VALUES ($allianceGroup,$userID,0,0)");
         logInfo("User added to alliance group. userID - ({$userID})");
-        updateStatus($userID, 'Active - Alliance', $config);
     }
 }
 
