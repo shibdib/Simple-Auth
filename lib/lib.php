@@ -20,7 +20,7 @@ function disableUser($userID, $config)
 function enableCorp($userID, $config)
 {
     $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
-    $corpGroup = $config['config']['corpID'];
+    $corpGroup = $config['config']['corpGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $corpGroup");
     $rowCount = mysqli_num_rows($group);
     if ((int)$rowCount === 0) {
@@ -32,7 +32,7 @@ function enableCorp($userID, $config)
 function enableAlliance($userID, $config)
 {
     $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
-    $allianceGroup = $config['config']['allianceID'];
+    $allianceGroup = $config['config']['allianceGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $allianceGroup");
     $rowCount = mysqli_num_rows($group);
     if ((int)$rowCount === 0) {
