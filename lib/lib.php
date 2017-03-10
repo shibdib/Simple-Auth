@@ -50,7 +50,7 @@ function checkStatus($keyID, $vCode, $config)
         logInfo('API Returned null, skipping.');
         return '3';
     }
-    if ($xml->result->rowset->row === null) {
+    if (@$xml->result->rowset->row === null) {
         logInfo('API Returned null, skipping.');
         return '3';
     }
