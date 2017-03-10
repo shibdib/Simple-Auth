@@ -11,7 +11,7 @@ function disableUser($userID, $config)
     $registeredID = $config['config']['registeredGroupID'];
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
     $rowCount = mysqli_num_rows($group);
-    if ((int)$rowCount === 0) {
+    if ((int)$rowCount > 0) {
         mysqli_query($mysqli, "DELETE FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
         logInfo("User removed from groups. userID - ({$userID})");
     }
