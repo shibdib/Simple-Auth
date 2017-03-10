@@ -46,7 +46,13 @@ function checkStatus($keyID, $vCode, $config)
     // Initialize a new request for this URL
     $url = "https://api.eveonline.com/account/Characters.xml.aspx?keyID={$keyID}&vCode={$vCode}";
     $xml = makeApiRequest($url);
-    if ($xml === null) {
+    if (@$xml->error->attributes()->code !== null) {
+        $error = $xml->error->attributes()->code;
+        if ((int)$error === 222 || 223 || 202 || 203 || 204) {
+            return null;
+        }
+    }
+    if (@$xml === null) {
         logInfo('API Returned null, skipping.');
         return '3';
     }
@@ -55,14 +61,6 @@ function checkStatus($keyID, $vCode, $config)
         return '3';
     }
     foreach ($xml->result->rowset->row as $character) {
-        if ($character->attributes()->errorCode !== null) {
-            $error = $character->attributes()->errorCode;
-            if ((int)$error === 222 || 223 || 202 || 203 || 204) {
-                logInfo("API Key Disabled. KeyID - ({$keyID})");
-                return null;
-            }
-            logInfo("API Error #{$error} Detected.");
-        }
         $corpID = $character->attributes()->corporationID;
         if ((int)$corpID === (int)$config['config']['corpID'] && (int)$config['config']['corpID'] !== 0) {
             return '1';
