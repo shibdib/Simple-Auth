@@ -64,11 +64,11 @@ function checkStatus($keyID, $vCode, $config)
             logInfo("API Error #{$error} Detected.");
         }
         $corpID = $character->attributes()->corporationID;
-        if ((int)$corpID === $config['config']['corpID']) {
+        if ((int)$corpID === (int)$config['config']['corpID'] && (int)$config['config']['corpID'] !== 0) {
             return '1';
         }
         $allianceID = $character->attributes()->allianceID;
-        if ((int)$allianceID === $config['config']['allianceID']) {
+        if ((int)$allianceID === (int)$config['config']['allianceID'] && (int)$config['config']['allianceID'] !== 0) {
             return '2';
         }
     }
