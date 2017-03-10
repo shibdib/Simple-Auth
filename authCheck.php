@@ -1,6 +1,5 @@
 <?php
-
-require_once __DIR__ . 'config.php';
+require_once __DIR__ . '/config.php';
 require __DIR__ . '/lib/lib.php';
 $result = getInfo($config);
 while($row = $result->fetch_assoc()) {
