@@ -14,6 +14,7 @@ function disableUser($userID, $config)
     if ((int)$rowCount > 0) {
         mysqli_query($mysqli, "DELETE FROM phpbb_user_group WHERE user_id = $userID AND group_id != $registeredID");
         logInfo("User removed from groups. userID - ({$userID})");
+        updateStatus($userID, 'Deactivated', $config);
     }
 }
 
@@ -24,8 +25,9 @@ function enableCorp($userID, $config)
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $corpGroup");
     $rowCount = mysqli_num_rows($group);
     if ((int)$rowCount === 0) {
-        mysqli_query($mysqli, "INSERT INTO table_name (group_id,user_id,group_leader,user_pending) VALUES ($corpGroup,$userID,0,0);");
+        mysqli_query($mysqli, "INSERT INTO phpbb_user_group (group_id,user_id,group_leader,user_pending) VALUES ($corpGroup,$userID,0,0)");
         logInfo("User added to corp group. userID - ({$userID})");
+        updateStatus($userID, 'Active - Corp', $config);
     }
 }
 
@@ -36,8 +38,9 @@ function enableAlliance($userID, $config)
     $group = mysqli_query($mysqli, "SELECT * FROM phpbb_user_group WHERE user_id = $userID AND group_id = $allianceGroup");
     $rowCount = mysqli_num_rows($group);
     if ((int)$rowCount === 0) {
-        mysqli_query($mysqli, "INSERT INTO table_name (group_id,user_id,group_leader,user_pending) VALUES ($allianceGroup,$userID,0,0);");
+        mysqli_query($mysqli, "INSERT INTO phpbb_user_group (group_id,user_id,group_leader,user_pending) VALUES ($allianceGroup,$userID,0,0)");
         logInfo("User added to alliance group. userID - ({$userID})");
+        updateStatus($userID, 'Active - Alliance', $config);
     }
 }
 
@@ -95,6 +98,12 @@ function makeApiRequest($url)
     } catch (Exception $e) {
         return null;
     }
+}
+
+function updateStatus($userID, $status, $config)
+{
+    $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
+    mysqli_query($mysqli, "UPDATE phpbb_profile_fields_data SET pf_api_keyid=$status WHERE user_id=$userID");
 }
 
 function logInfo($msg)
