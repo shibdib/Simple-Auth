@@ -14,7 +14,7 @@ while ($row = $result->fetch_assoc()) {
     }
     $keyInfo = checkStatus($keyID, $vCode, $config);
     if ($keyInfo === null) {
-        disableUser($userID, $config, $mysqli);
+        disableUser($userID, $mysqli);
         continue;
     }
     if ($keyInfo === '1') {
