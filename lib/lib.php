@@ -99,7 +99,7 @@ function makeApiRequest($url)
 function updateStatus($userID, $status, $config)
 {
     $mysqli = mysqli_connect($config['database']['host'], $config['database']['user'], $config['database']['pass'], $config['database']['database']);
-    mysqli_query($mysqli, "UPDATE phpbb_profile_fields_data SET pf_api_status=$status WHERE user_id=$userID");
+    mysqli_query($mysqli, "UPDATE phpbb_profile_fields_data SET pf_api_status='$status' WHERE user_id=$userID");
 }
 
 function logInfo($msg)
