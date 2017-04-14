@@ -105,7 +105,9 @@ function makeApiRequest($url)
 function updatePrimary($userID, $groupID, $mysqli)
 {
     $color = getColor($groupID, $mysqli);
-    mysqli_query($mysqli, "UPDATE phpbb_users SET group_id='$groupID', user_colour='$color' WHERE user_id=$userID");
+    if (strlen($color) < 5) {$color = '';}
+    mysqli_query($mysqli, "UPDATE phpbb_users SET group_id='$groupID' WHERE user_id=$userID");
+    mysqli_query($mysqli, "UPDATE phpbb_users SET user_colour='$color' WHERE user_id=$userID");
 }
 
 function updateStatus($userID, $status, $mysqli)
