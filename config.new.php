@@ -6,7 +6,6 @@ $config['config'] = array(
     'corpGroupID' => 0, // The group ID you want assigned to people in the correct corp (Leave as 0 if not using)
     'allianceID' => 0, // EVE Online alliance ID (Leave as 0 if not using)
     'allianceGroupID' => 0, // The group ID you want assigned to people in the correct alliance (Leave as 0 if not using)
-    'registeredGroupID' => 14, // The group ID for default registered users (typically 14)
 );
 
 $config['database'] = array(
