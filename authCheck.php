@@ -24,3 +24,4 @@ while ($row = $result->fetch_assoc()) {
         enableAlliance($userID, $config, $mysqli);
     }
 }
+logInfo('Auth Check Complete');
