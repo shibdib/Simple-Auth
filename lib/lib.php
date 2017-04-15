@@ -122,12 +122,16 @@ function resetSession($userID, $mysqli)
 
 function getRegisteredID($mysqli)
 {
-    return mysqli_query($mysqli, "SELECT group_id FROM phpbb_groups WHERE group_name = 'REGISTERED'");
+    $query = mysqli_query($mysqli, "SELECT * FROM phpbb_groups WHERE group_name='REGISTERED'");
+    $row = $query->fetch_assoc();
+    return $row['group_id'];
 }
 
 function getColor($groupID, $mysqli)
 {
-    return mysqli_query($mysqli, "SELECT group_colour FROM phpbb_groups WHERE group_id = $groupID");
+    $query = mysqli_query($mysqli, "SELECT * FROM phpbb_groups WHERE group_id = $groupID");
+    $row = $query->fetch_assoc();
+    return $row['group_colour'];
 }
 
 function logInfo($msg)
